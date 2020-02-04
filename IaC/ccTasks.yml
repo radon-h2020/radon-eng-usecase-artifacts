@@ -1,0 +1,43 @@
+---
+- hosts: ccserver.novalocal
+  remote_user: root
+  tasks:
+  - name: install java 1.8
+    yum:
+      name: java-1.8.0-openjdk
+      state: latest
+
+  - name: install tomcat
+    yum:
+      name: tomcat
+      state: latest
+
+  - name: start tomcat
+    service:
+      name: tomcat
+      state: started 
+      enabled: yes
+
+  - name: deploy call distributor services
+      copy:
+        src: /home/sara/sara-calldistributor.war
+        dest: /opt/tomcat/webapps
+      notify: restart tomcat
+
+  - name: deploy operator services
+      copy:
+        src: /home/sara/sara-operatorservices.war
+        dest: /opt/tomcat/webapps
+      notify: restart tomcat
+  
+  - name: deploy operator web app
+      copy:
+        src: /home/sara/SARA.frontend.prod.war
+        dest: /opt/tomcat/webapps
+      notify: restart tomcat
+
+  handlers:
+    - name: restart tomcat
+      service:
+        name: tomcat
+        state: restarted

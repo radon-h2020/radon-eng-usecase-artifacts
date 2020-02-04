@@ -1,0 +1,33 @@
+---
+- hosts: areasserver.novalocal
+  remote_user: root
+  tasks:
+  - name: Install MySQL 5.7 repo
+    yum: 
+      name: http://dev.mysql.com/get/mysql57-community-release-el7-8.noarch.rpm 
+      state: present
+
+  - name: Install MySQL 5.7
+    yum: 
+      name: 
+        - mysql-community-server
+        - mysql-community-client
+        - MySQL-python
+      state: present
+
+  - name: Start the MySQL service
+    service: 
+      name: mysqld 
+      state: started
+      enabled: yes
+
+  - name: create mysql database
+    mysql_db: 
+      name: AMM 
+      state: present
+
+  - name: Import dump file
+    mysql_db:
+      state: import
+      name: all
+      target: /tmp/AMM_dump.sql
