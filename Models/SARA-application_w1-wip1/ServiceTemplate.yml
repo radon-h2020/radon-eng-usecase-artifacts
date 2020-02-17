@@ -1,0 +1,239 @@
+tosca_definitions_version: tosca_simple_yaml_1_3
+
+metadata:
+  targetNamespace: radon.demos
+topology_template:
+  node_templates:
+    JavaApplication_3:
+      type: radon.nodes.java.JavaApplication
+      metadata:
+        x: 794
+        y: 901
+        displayName: PeronalHealthRecord
+      properties:
+        component_version: ""
+      requirements:
+        - host:
+            node: JavaRuntime_2
+            relationship:
+              type: con_HostedOn_4
+            capability: host
+        - dependency:
+            node: MySQLDBMS
+            relationship:
+              type: con_DependsOn_3
+            capability: feature
+    MySQLDBMS_2:
+      type: radon.nodes.mysql.MySQLDBMS
+      metadata:
+        x: 1143
+        y: 340
+        displayName: MySQLDBMS
+      properties:
+        port: "3306"
+        root_password: "root"
+        component_version: "5.6"
+      requirements:
+        - host:
+            node: tosca.nodes.Compute
+            relationship:
+              type: tosca.relationships.HostedOn
+            capability: tosca.capabilities.Compute
+        - dependency:
+            node: tosca.nodes.Root
+            relationship:
+              type: tosca.relationships.DependsOn
+            capability: tosca.capabilities.Node
+    JavaRuntime:
+      type: radon.nodes.java.JavaRuntime
+      metadata:
+        x: 203
+        y: 218
+        displayName: JavaRuntime_CallCentreServer
+      properties:
+        component_version: ""
+      requirements:
+        - host:
+            node: Compute
+            relationship:
+              type: con_HostedOn_0
+            capability: host
+        - dependency:
+            node: tosca.nodes.Root
+            relationship:
+              type: tosca.relationships.DependsOn
+            capability: tosca.capabilities.Node
+      capabilities:
+        host:
+          properties:
+            headless: "true"
+            java_version: "8"
+            only_jre: "true"
+    Compute_2:
+      type: tosca.nodes.Compute
+      metadata:
+        x: 828
+        y: 591
+        displayName: AREAS_Server
+      requirements:
+        - local_storage:
+            node: tosca.nodes.Storage.BlockStorage
+            relationship:
+              type: tosca.relationships.AttachesTo
+            capability: tosca.capabilities.Attachment
+        - dependency:
+            node: tosca.nodes.Root
+            relationship:
+              type: tosca.relationships.DependsOn
+            capability: tosca.capabilities.Node
+      capabilities:
+        host:
+          properties:
+            num_cpus: "4"
+            name: ""
+            disk_size: "80GB"
+            cpu_frequency: ""
+            mem_size: "8GB"
+    JavaApplication_2:
+      type: radon.nodes.java.JavaApplication
+      metadata:
+        x: 939
+        y: 83
+        displayName: IAM
+      properties:
+        component_version: ""
+      requirements:
+        - host:
+            relationship:
+              type: tosca.relationships.HostedOn
+            capability: tosca.capabilities.Container
+        - dependency:
+            node: MySQLDBMS_2
+            relationship:
+              type: con_DependsOn_1
+            capability: feature
+    JavaRuntime_2:
+      type: radon.nodes.java.JavaRuntime
+      metadata:
+        x: 497
+        y: 800
+        displayName: JavaRuntime_AREAS_Server
+      properties:
+        component_version: ""
+      requirements:
+        - host:
+            node: Compute_2
+            relationship:
+              type: con_HostedOn_3
+            capability: host
+        - dependency:
+            node: tosca.nodes.Root
+            relationship:
+              type: tosca.relationships.DependsOn
+            capability: tosca.capabilities.Node
+    MySQLDBMS:
+      type: radon.nodes.mysql.MySQLDBMS
+      metadata:
+        x: 1087
+        y: 910
+        displayName: MySQLDBMS
+      properties:
+        port: "3306"
+        root_password: "root"
+        component_version: "5.6"
+      requirements:
+        - host:
+            node: Compute_2
+            relationship:
+              type: con_HostedOn_5
+            capability: host
+        - dependency:
+            node: tosca.nodes.Root
+            relationship:
+              type: tosca.relationships.DependsOn
+            capability: tosca.capabilities.Node
+    JavaApplication:
+      type: radon.nodes.java.JavaApplication
+      metadata:
+        x: 535
+        y: 105
+        displayName: CallDistributor
+      properties:
+        component_version: ""
+      requirements:
+        - host:
+            node: JavaRuntime
+            relationship:
+              type: con_HostedOn_1
+            capability: host
+        - dependency:
+            node: JavaApplication_2
+            relationship:
+              type: con_DependsOn_2
+            capability: feature
+    Compute:
+      type: tosca.nodes.Compute
+      metadata:
+        x: 494
+        y: 399
+        displayName: CallCentreSerer
+      requirements:
+        - local_storage:
+            node: tosca.nodes.Storage.BlockStorage
+            relationship:
+              type: tosca.relationships.AttachesTo
+            capability: tosca.capabilities.Attachment
+        - dependency:
+            node: tosca.nodes.Root
+            relationship:
+              type: tosca.relationships.DependsOn
+            capability: tosca.capabilities.Node
+      capabilities:
+        host:
+          properties:
+            num_cpus: "4"
+            name: ""
+            disk_size: "80GB"
+            cpu_frequency: ""
+            mem_size: "8GB"
+    NodeJSApplication:
+      type: radon.nodes.nodejs.NodeJSApplication
+      metadata:
+        x: 865
+        y: 317
+        displayName: NodeJSApplication
+      properties:
+        node_version: "10.16.0"
+        component_version: ""
+      requirements:
+        - host:
+            node: Compute
+            relationship:
+              type: con_HostedOn_2
+            capability: host
+        - dependency:
+            node: JavaApplication
+            relationship:
+              type: con_DependsOn_0
+            capability: feature
+  relationship_templates:
+    con_DependsOn_0:
+      type: tosca.relationships.DependsOn
+    con_HostedOn_2:
+      type: tosca.relationships.HostedOn
+    con_DependsOn_1:
+      type: tosca.relationships.DependsOn
+    con_HostedOn_3:
+      type: tosca.relationships.HostedOn
+    con_HostedOn_0:
+      type: tosca.relationships.HostedOn
+    con_HostedOn_1:
+      type: tosca.relationships.HostedOn
+    con_DependsOn_2:
+      type: tosca.relationships.DependsOn
+    con_DependsOn_3:
+      type: tosca.relationships.DependsOn
+    con_HostedOn_4:
+      type: tosca.relationships.HostedOn
+    con_HostedOn_5:
+      type: tosca.relationships.HostedOn
